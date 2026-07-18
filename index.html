@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<title>HANDFILM // BLOOM OS ULTRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ═══ PIN LOCK ═══ -->
+<div id="pinScreen">
+  <div class="pin-brand">HAND<span>FILM</span></div>
+  <div class="pin-sub">BLOOM OS · PRIVATE</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinPress('1')">1</button>
+    <button class="pin-key" onclick="pinPress('2')">2</button>
+    <button class="pin-key" onclick="pinPress('3')">3</button>
+    <button class="pin-key" onclick="pinPress('4')">4</button>
+    <button class="pin-key" onclick="pinPress('5')">5</button>
+    <button class="pin-key" onclick="pinPress('6')">6</button>
+    <button class="pin-key" onclick="pinPress('7')">7</button>
+    <button class="pin-key" onclick="pinPress('8')">8</button>
+    <button class="pin-key" onclick="pinPress('9')">9</button>
+    <button class="pin-key empty"></button>
+    <button class="pin-key" onclick="pinPress('0')">0</button>
+    <button class="pin-key del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-hint" onclick="pinSkip()">SKIP / NO PIN</div>
+</div>
+
+<!-- ═══ SLIDESHOW ═══ -->
+<div id="slideshowOv">
+  <div id="ssMedia" class="fade"></div>
+  <div class="ss-prog" id="ssProg"></div>
+  <div class="ss-bar">
+    <div class="ss-title" id="ssTitle">—</div>
+    <div class="ss-counter" id="ssCnt">0 / 0</div>
+    <button class="btn btn-ghost btn-sm" onclick="ssPause()" id="ssPauseBtn">⏸</button>
+    <button class="btn btn-ghost btn-sm" onclick="closeSlideshow()" style="margin-left:4px">✕</button>
+  </div>
+</div>
+
+<!-- ═══ BATCH AI MODAL ═══ -->
+<div class="modal-bd" id="batchModal" onclick="modalBg(event,'batchModal')">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><div class="modal-label">AI BATCH</div><div class="modal-title">Batch Generate All</div></div>
+      <button class="modal-close" onclick="closeModal('batchModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="batch-prog-wrap">
+        <div class="batch-prog-track"><div class="batch-prog-fill" id="batchProgFill" style="width:0%"></div></div>
+        <div class="batch-prog-lbl" id="batchProgLbl">READY — WILL PROCESS ALL ENTRIES WITHOUT AI DATA</div>
+      </div>
+      <div class="batch-list" id="batchList"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gold" id="batchRunBtn" onclick="runBatchAI()">✦ START BATCH</button>
+      <button class="btn btn-ghost" onclick="closeModal('batchModal')">CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     NAV
+═══════════════════════════════════ -->
+<nav id="nav">
+  <div class="nav-brand" onclick="go('home')">
+    <div class="nav-brand-name">HANDFILM</div>
+    <div class="nav-brand-sub">BLOOM</div>
+  </div>
+  <div class="nav-links">
+    <button class="nl on" onclick="go('home')">HOME</button>
+    <button class="nl" onclick="go('stream')">STREAM</button>
+    <button class="nl" onclick="go('library')">LIBRARY</button>
+    <button class="nl" onclick="go('refs')">REFS</button>
+    <span class="nl-sep"></span>
+    <a class="nl nl-ext" href="https://handfilm.github.io/rawx-lingerie/index-b2b.html" target="_blank" rel="noopener">RAWx<span class="nl-ext-ico">↗</span></a>
+    <a class="nl nl-ext" href="https://handfilm.myshopify.com/pages/rawx-master-os" target="_blank" rel="noopener">RAWx PORTAL<span class="nl-ext-ico">↗</span></a>
+    <a class="nl nl-ext" href="https://handfilm.myshopify.com/pages/rawx-os-v2" target="_blank" rel="noopener">RAWx OS<span class="nl-ext-ico">↗</span></a>
+    <a class="nl nl-ext" href="https://handfilm.myshopify.com/pages/home-test" target="_blank" rel="noopener">HANDFILM<span class="nl-ext-ico">↗</span></a>
+  </div>
+  <button id="brandHubBtn" onclick="toggleBrandHub()" title="Brand links" style="background:none;border:1px solid var(--e2);color:var(--gold);width:30px;height:30px;border-radius:50%;align-items:center;justify-content:center;font-family:var(--disp);font-size:13px;cursor:pointer;margin-left:auto;flex-shrink:0">⊕</button>
+  <div class="nav-r">
+    <div id="savedInd"><div class="sv-dot"></div><span id="savedTime">SAVED</span></div>
+    <div class="nav-stat">ENTRIES <span id="nEnt">0</span></div>
+    <div class="nav-stat">MEDIA <span id="nMed">0</span></div>
+    <div class="nav-live"><div class="nav-dot"></div>LIVE</div>
+    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
+    <button class="btn btn-ghost btn-sm" onclick="importJSON()" title="Import JSON">↑ JSON</button>
+    <button class="btn btn-ghost btn-sm" onclick="openBatchModal()" title="Batch AI Generate">✦ BATCH</button>
+    <button class="btn btn-ghost btn-sm" onclick="startSlideshow()" title="Slideshow">▶ SHOW</button>
+    <button class="btn btn-sm" onclick="openBulk()">⊞ BULK</button>
+    <button class="btn btn-gold btn-sm" onclick="openAdd()">＋ ENTRY <span class="kbd">N</span></button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════ -->
+<div class="page on" id="homePage">
+
+  <!-- HERO SLIDER -->
+  <div id="heroWrap">
+    <div class="hero-track" id="heroTrack"></div>
+    <div class="hero-dots" id="heroDots"></div>
+    <div class="hero-nav">
+      <button class="hero-nav-btn" onclick="heroStep(-1)">‹</button>
+      <button class="hero-nav-btn" onclick="heroStep(1)">›</button>
+    </div>
+    <div class="hero-prog"><div class="hero-prog-fill" id="heroProg"></div></div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner" id="tickerInner"></div>
+  </div>
+
+  <!-- FILMSTRIP -->
+  <div id="filmWrap"><div id="film"></div></div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow">
+    <div class="sr-cell"><div class="sr-val" id="srEnt">0</div><div class="sr-label">Entries</div></div>
+    <div class="sr-cell"><div class="sr-val" id="srMed">0</div><div class="sr-label">Media Files</div></div>
+    <div class="sr-cell"><div class="sr-val" id="srAvg">—</div><div class="sr-label">Avg Bloom</div></div>
+    <div class="sr-cell"><div class="sr-val" id="srRefs">0</div><div class="sr-label">Refs</div></div>
+  </div>
+  <!-- STORAGE BAR -->
+  <div class="storage-bar-wrap">
+    <div class="storage-bar-track"><div class="storage-bar-fill" id="storageBarFill" style="width:0%"></div></div>
+    <div class="storage-bar-lbl" id="storageBarLbl">Storage: 0KB / 5MB</div>
+  </div>
+
+  <!-- RECENT STRIP -->
+  <div class="home-sec">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">Latest</div><div class="sec-title"><span class="g">RECENT</span> <span class="d">ENTRIES</span></div></div>
+      <button class="btn btn-ghost btn-sm" onclick="go('library')">VIEW ALL →</button>
+    </div>
+    <div class="recent-strip" id="recentStrip"></div>
+  </div>
+
+  <!-- VIDEO FEED -->
+  <div class="home-sec" style="padding-top:32px;padding-bottom:40px">
+    <div class="sec-head">
+      <div><div class="sec-eyebrow">Video Content</div><div class="sec-title"><span class="g">VIDEO</span> <span class="d">FEED</span></div></div>
+      <button class="btn btn-ghost btn-sm" onclick="go('stream')">STREAM ALL →</button>
+    </div>
+    <div class="grid cv" id="videoFeed"></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     STREAM PAGE
+═══════════════════════════════════ -->
+<div class="page" id="streamPage">
+  <div class="stream-layout">
+    <div class="stream-main">
+      <div class="stream-player" id="streamPlayer">
+        <div class="ph" style="height:100%"><div class="ph-icon" style="font-size:48px">▶</div><div>SELECT MEDIA TO STREAM</div></div>
+      </div>
+      <div class="stream-bar">
+        <div class="stream-title" id="streamTitle">—</div>
+        <div id="streamAct" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+    </div>
+    <div class="stream-queue">
+      <div class="queue-head">QUEUE <span id="qCount" style="color:var(--gold)">0</span></div>
+      <div id="qList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LIBRARY PAGE
+═══════════════════════════════════ -->
+<div class="page" id="libraryPage">
+  <div class="lib-shell">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-prefix">⌕</span>
+        <input class="search-input" type="text" id="searchInput" placeholder="Search title, tags, notes…" oninput="applyFilters()">
+        <span class="search-kbd">/</span>
+      </div>
+      <select class="filter-select" id="filterSolo" onchange="applyFilters()">
+        <option value="">ALL TYPES</option><option value="true">SOLO</option><option value="false">NON-SOLO</option>
+      </select>
+      <select class="filter-select" id="filterPower" onchange="applyFilters()">
+        <option value="">ALL POWER</option><option value="High">HIGH</option><option value="Medium">MEDIUM</option><option value="Natural">NATURAL</option>
+      </select>
+      <select class="filter-select" id="filterMedia" onchange="applyFilters()">
+        <option value="">ALL MEDIA</option><option value="video">HAS VIDEO</option><option value="image">HAS IMAGE</option><option value="youtube">HAS YOUTUBE</option><option value="none">NO MEDIA</option>
+      </select>
+      <select class="sort-select" id="sortBy" onchange="applyFilters()">
+        <option value="newest">NEWEST</option><option value="oldest">OLDEST</option><option value="bloom-desc">BLOOM ↓</option><option value="bloom-asc">BLOOM ↑</option><option value="media-desc">MOST MEDIA</option><option value="alpha">A–Z</option>
+      </select>
+      <div class="view-toggle">
+        <button class="vb on" id="vbG" onclick="setView('grid')" title="Grid">⊞</button>
+        <button class="vb" id="vbL" onclick="setView('list')" title="List">☰</button>
+        <button class="vb" id="vbC" onclick="setView('cinema')" title="Cinema">⊟</button>
+      </div>
+      <div class="hist-wrap" id="histogram"></div>
+    </div>
+    <div class="count-bar">
+      <div><span class="live" id="cntLbl">0</span> <span id="cntMeta"></span></div>
+    </div>
+    <div class="grid gv" id="entriesGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     REFS PAGE
+═══════════════════════════════════ -->
+<div class="page" id="refsPage">
+  <div class="refs-shell">
+    <div class="refs-add">
+      <input type="text" id="refUrl" placeholder="Image URL or filename…" style="flex:1;min-width:180px;padding:8px 11px;font-size:11px">
+      <input type="text" id="refLabel" placeholder="Label" style="width:150px;padding:8px 11px;font-size:11px">
+      <button class="btn btn-gold btn-sm" onclick="addRef()">＋ ADD REF</button>
+    </div>
+    <div class="refs-grid" id="refsGrid"></div>
+  </div>
+</div>
+
+<!-- ═══ MOBILE BRAND HUB SHEET ═══ -->
+<div id="brandHubSheet" onclick="if(event.target===this)toggleBrandHub()">
+  <div class="brand-hub-panel">
+    <div class="brand-hub-head">
+      <div class="brand-hub-title">BRAND LINKS</div>
+      <button class="brand-hub-close" onclick="toggleBrandHub()">✕</button>
+    </div>
+    <a class="brand-hub-link" href="https://handfilm.github.io/rawx-lingerie/index-b2b.html" target="_blank" rel="noopener">RAWx <span>↗</span></a>
+    <a class="brand-hub-link" href="https://handfilm.myshopify.com/pages/rawx-master-os" target="_blank" rel="noopener">RAWx PORTAL <span>↗</span></a>
+    <a class="brand-hub-link" href="https://handfilm.myshopify.com/pages/rawx-os-v2" target="_blank" rel="noopener">RAWx OS <span>↗</span></a>
+    <a class="brand-hub-link" href="https://handfilm.myshopify.com/pages/home-test" target="_blank" rel="noopener">HANDFILM <span>↗</span></a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     MOBILE NAV
+═══════════════════════════════════ -->
+<div id="mobile-nav">
+  <div class="mn-items">
+    <button class="mn-item on" onclick="go('home')"><div class="mn-icon">⌂</div><div class="mn-label">Home</div></button>
+    <button class="mn-item" onclick="go('stream')"><div class="mn-icon">▶</div><div class="mn-label">Stream</div></button>
+    <button class="mn-item" onclick="openAdd()" style="color:var(--gold)"><div class="mn-icon" style="font-size:22px;background:var(--gold);color:#000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">＋</div><div class="mn-label">Add</div></button>
+    <button class="mn-item" onclick="go('library')"><div class="mn-icon">⊞</div><div class="mn-label">Library</div></button>
+    <button class="mn-item" onclick="go('refs')"><div class="mn-icon">⊡</div><div class="mn-label">Refs</div></button>
+  </div>
+</div>
+
+<!-- ═══ DETAIL MODAL ═══ -->
+<div class="modal-bd" id="detailModal" onclick="modalBg(event,'detailModal')">
+  <div class="modal modal-xl" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><div class="modal-label" id="detailLbl">ENTRY</div><div class="modal-title" id="detailTitleH">—</div></div>
+      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    </div>
+    <div id="detailPlayer"></div>
+    <div id="detailStrip"></div>
+    <div id="detailMact"></div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-foot" id="detailFoot"></div>
+  </div>
+</div>
+
+<!-- ═══ ADD/EDIT MODAL ═══ -->
+<div class="modal-bd" id="addModal" onclick="modalBg(event,'addModal')">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><div class="modal-label" id="addLbl">NEW ENTRY</div><div class="modal-title" id="addTitle">Add to Library</div></div>
+      <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editIdx">
+      <div class="fr"><label>Title *</label><input type="text" id="fTitle" placeholder="Entry title…"></div>
+      <div class="fr">
+        <label>Media</label>
+        <div class="media-sec">
+          <div class="media-tabs">
+            <button class="media-tab on" onclick="setMTab('file')">LOCAL FILE</button>
+            <button class="media-tab" onclick="setMTab('url')">URL</button>
+            <button class="media-tab" onclick="setMTab('gdrive')">GDRIVE</button>
+            <button class="media-tab" onclick="setMTab('youtube')">YOUTUBE</button>
+            <button class="media-tab" onclick="setMTab('vimeo')">VIMEO</button>
+          </div>
+          <!-- FILE UPLOAD ROW — shown only on file tab -->
+          <div class="media-add-row" id="fileUploadRow">
+            <input type="text" id="mediaInput" placeholder="filename.mp4 or browse →" onkeydown="if(event.key==='Enter'){event.preventDefault();addMediaItem()}">
+            <button class="btn btn-sm btn-ghost" onclick="triggerFilePick()" title="Browse phone storage">📁 BROWSE</button>
+            <button class="btn btn-sm btn-gold" onclick="addMediaItem()">ADD</button>
+            <!-- hidden file input -->
+            <input type="file" id="filePickInput" accept="image/*,video/*" multiple style="display:none" onchange="handleFilePick(event)">
+          </div>
+          <div class="media-list" id="mediaList"><div class="media-empty">No media attached</div></div>
+        </div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label>Solo Woman?</label><select id="fSolo"><option value="true">Yes — Solo</option><option value="false">No</option></select></div>
+        <div class="fr"><label>Man's Role</label><select id="fManRole"><option value="Absent">Absent</option><option value="Supporter">Supporter</option><option value="Victim">Victim</option></select></div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label>Bloom Level — <span id="bloomLbl">8</span>/10</label>
+          <div class="bloom-slider">
+            <input type="range" id="fBloom" min="1" max="10" value="8" oninput="document.getElementById('bloomLbl').textContent=this.value;document.getElementById('bloomBig').textContent=this.value">
+            <div class="bloom-big" id="bloomBig">8</div>
+          </div>
+        </div>
+        <div class="fr"><label>Woman's Power</label><select id="fPower"><option value="High">High</option><option value="Medium">Medium</option><option value="Natural">Natural</option></select></div>
+      </div>
+      <div class="fr"><label>Tags (comma-separated)</label><input type="text" id="fTags" placeholder="Preparation, Flow, Primal…"></div>
+      <div class="fr"><label>Journal / Reflection</label><textarea id="fNotes" placeholder="Write your thoughts…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gold" onclick="saveEntry()">SAVE ENTRY</button>
+      <button class="btn btn-ghost" onclick="closeModal('addModal')">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BULK MODAL ═══ -->
+<div class="modal-bd" id="bulkModal" onclick="modalBg(event,'bulkModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><div class="modal-label">IMPORT</div><div class="modal-title">Bulk Import</div></div>
+      <button class="modal-close" onclick="closeModal('bulkModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:9px;color:var(--tx3);letter-spacing:1.5px;margin-bottom:14px;text-transform:uppercase">One title per line — defaults applied automatically</p>
+      <div class="fr"><label>Titles</label><textarea id="bulkTitles" rows="9" placeholder="Title One&#10;Title Two&#10;Title Three…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gold" onclick="execBulk()">IMPORT ALL</button>
+      <button class="btn btn-ghost" onclick="closeModal('bulkModal')">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ZOOM OVERLAY ═══ -->
+<div id="zoomOv" onclick="handleZoomBg(event)">
+  <button class="zoom-close" onclick="closeZoom()">✕</button>
+  <img id="zoomImg" src="" alt="" onclick="toggleZoomLevel()">
+  <div class="zoom-controls">
+    <button class="btn btn-ghost btn-sm" onclick="zoomIn()">＋</button>
+    <button class="btn btn-ghost btn-sm" id="zoomLbl">1×</button>
+    <button class="btn btn-ghost btn-sm" onclick="zoomOut()">－</button>
+    <button class="btn btn-ghost btn-sm" onclick="resetZoom()">⊡ RESET</button>
+  </div>
+  <div class="zoom-bar" id="zoomBar"></div>
+</div>
+
+<!-- ═══ POST PANEL ═══ -->
+<div id="postPanel">
+  <div class="panel-head">
+    <div class="panel-title">POST MEDIA</div>
+    <button class="btn-del" onclick="closePost()">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="post-preview" id="postPreview"></div>
+    <div class="pfield"><label>Caption</label><textarea id="postCaption" placeholder="Write caption…"></textarea></div>
+    <div class="pfield"><label>Hashtags</label><input type="text" id="postHashtags" placeholder="#rawx #handfilm #bloom"></div>
+    <div class="pfield"><label>Platforms</label>
+      <div class="platforms">
+        <button class="pltf-btn on" onclick="this.classList.toggle('on')">INSTAGRAM</button>
+        <button class="pltf-btn" onclick="this.classList.toggle('on')">TIKTOK</button>
+        <button class="pltf-btn" onclick="this.classList.toggle('on')">TWITTER/X</button>
+        <button class="pltf-btn" onclick="this.classList.toggle('on')">FACEBOOK</button>
+        <button class="pltf-btn" onclick="this.classList.toggle('on')">BUFFER</button>
+        <button class="pltf-btn" onclick="this.classList.toggle('on')">SHOPIFY</button>
+      </div>
+    </div>
+    <div class="pfield"><label>Schedule</label>
+      <select style="width:100%;padding:8px 10px"><option>Post Now</option><option>In 1 Hour</option><option>Custom Time</option></select>
+    </div>
+  </div>
+  <div class="panel-foot">
+    <button class="btn btn-gold" onclick="submitPost()">QUEUE POST</button>
+    <button class="btn btn-ghost" onclick="closePost()">CANCEL</button>
+  </div>
+</div>
+
+<!-- ═══ CATALOGUE PANEL ═══ -->
+<div id="catPanel">
+  <div class="panel-head">
+    <div class="panel-title">CATALOGUE</div>
+    <button class="btn-del" onclick="closeCat()">✕</button>
+  </div>
+  <div class="panel-body">
+    <div id="catGroups"></div>
+    <button class="btn btn-sm btn-gold" style="margin-top:8px" onclick="addCatGroup()">＋ NEW CATEGORY</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+
+<!-- Local config: copy js/config.example.js -> js/config.js and fill in your key (gitignored) -->
+<script src="js/config.js"></script>
+<script src="js/core.js"></script>
+<script src="js/home.js"></script>
+<script src="js/stream.js"></script>
+<script src="js/library.js"></script>
+<script src="js/detail.js"></script>
+<script src="js/entry-editor.js"></script>
+<script src="js/refs.js"></script>
+<script src="js/ai-export.js"></script>
+<script src="js/ui-system.js"></script>
+<script src="js/init.js"></script>
+</body>
+</html>
